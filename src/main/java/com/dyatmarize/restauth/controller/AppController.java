@@ -1,8 +1,12 @@
 package com.dyatmarize.restauth.controller;
 
+import com.dyatmarize.restauth.api.request.LoginRequest;
+import com.dyatmarize.restauth.api.request.RegisterRequest;
 import com.dyatmarize.restauth.api.response.BaseResponse;
+import com.dyatmarize.restauth.service.UserService;
 import com.dyatmarize.restauth.util.Prefix;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -10,26 +14,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(Prefix.API)
 public class AppController {
 
+    @Autowired
+    UserService userService;
+
     @GetMapping("/test")
     public String testEndpoint() {
         return "Initialize Success";
     }
 
     // User Controller
-    @PostMapping("/register")
-    public BaseResponse registerUser() {
-        return BaseResponse.builder()
-                .withSuccess(true)
-                .withData("Register")
-                .build();
+    @PostMapping(Prefix.USER + "/register")
+    public BaseResponse registerUser(@RequestBody RegisterRequest request) {
+        return userService.register(request);
     }
 
-    @PostMapping("/login")
-    public BaseResponse doLogin() {
-        return BaseResponse.builder()
-                .withSuccess(true)
-                .withData("Login")
-                .build();
+    @PostMapping(Prefix.USER + "/login")
+    public BaseResponse doLogin(@RequestBody LoginRequest request) {
+        return userService.doLogin(request);
     }
 
     // Blog Post Controller
